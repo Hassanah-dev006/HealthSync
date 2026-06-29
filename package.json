@@ -1,0 +1,23 @@
+{
+  "name": "malaria-early-detection-platform",
+  "version": "1.0.0",
+  "description": "Community-Based Malaria Early Detection & Rapid Response System — ALU Foundations Project",
+  "type": "commonjs",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "seed": "node server/seed/run.js",
+    "reset": "node server/seed/run.js --reset"
+  },
+  "keywords": ["malaria", "health", "surveillance", "rwanda", "community-health"],
+  "author": "ALU BSc Software Engineering — Foundations Project Team",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "express": "^5.0.0"
+  },
+  "optionalDependencies": {
+    "twilio": "^5.0.0"
+  }
+}
