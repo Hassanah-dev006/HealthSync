@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#08393e" />
+  <title>Report Symptoms · Malaria Check</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo-dot">＋</div>
+    <div class="brand" id="appName">Malaria Check<small id="tagline">Report symptoms · Get help early</small></div>
+    <div class="spacer"></div>
+    <div class="lang-switch" id="langSwitch">
+      <button data-lang="en" class="active">EN</button>
+      <button data-lang="rw">RW</button>
+    </div>
+  </div>
+
+  <div class="wrap center-narrow">
+    <!-- ============ FORM ============ -->
+    <div id="formView">
+      <div class="card">
+        <h1 class="title" id="reportTitle">How are you feeling?</h1>
+        <p class="subtle" id="reportIntro">Tap every symptom you have. It only takes a few seconds.</p>
+
+        <div class="section-label" id="coreLabel">Common symptoms</div>
+        <div class="symptom-grid" id="coreSymptoms"></div>
+
+        <div class="section-label" id="dangerLabel">Serious warning signs</div>
+        <div class="symptom-grid" id="dangerSymptoms"></div>
+        <div class="danger-note" id="dangerNote">If any of these are present, seek help immediately.</div>
+
+        <div class="field">
+          <label id="durationLabel">How many days have you felt this way?</label>
+          <div class="duration-pills" id="durationPills"></div>
+        </div>
+
+        <div class="field">
+          <label id="locationLabel">Your location</label>
+          <button class="btn secondary" id="locBtn" type="button" style="width:auto;margin-top:0">📍 <span id="useLocation">Use my current location</span></button>
+          <div class="loc-status" id="locStatus"></div>
+          <div id="map" style="height:240px;margin-top:10px"></div>
+        </div>
+
+        <div class="field">
+          <label id="optionalDetails">Your details (optional)</label>
+          <div class="row">
+            <input type="text" id="name" placeholder="e.g. Mukamana" />
+            <input type="tel" id="phone" placeholder="+250…" />
+          </div>
+        </div>
+
+        <button class="btn" id="submitBtn"><span id="submitLabel">Check my risk</span></button>
+        <p class="subtle" id="disclaimer" style="font-size:.8rem;margin-top:14px;text-align:center"></p>
+      </div>
+    </div>
+
+    <!-- ============ RESULT ============ -->
+    <div id="resultView" class="hidden">
+      <div class="card result">
+        <div class="risk-badge" id="riskBadge"></div>
+        <p class="advice" id="advice"></p>
+
+        <div class="referral-box hidden" id="referralBox">
+          <h4 id="referralTitle">Help is on the way</h4>
+          <p id="referralText"></p>
+          <div class="msg" id="referralMsg"></div>
+        </div>
+
+        <div class="reasons">
+          <strong id="whyTitle">Why this result</strong>
+          <ul id="reasonsList"></ul>
+        </div>
+
+        <button class="btn" id="againBtn"></button>
+        <a class="btn secondary" href="/" id="homeBtn" style="margin-top:10px"></a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/report.js"></script>
+  <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("/service-worker.js").catch(()=>{});</script>
+</body>
+</html>
