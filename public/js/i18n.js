@@ -26,7 +26,7 @@ window.I18N = {
     submitting: "Checking…",
     selectSymptom: "Please tap at least one symptom.",
     needLocation: "Please set your location first.",
-    // result
+    // results
     resultLow: "Low risk",
     resultMedium: "Medium risk",
     resultHigh: "High risk",
