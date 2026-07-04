@@ -53,3 +53,31 @@
             <input type="tel" id="phone" placeholder="+250…" />
           </div>
         </div>
+
+         <button class="btn" id="submitBtn"><span id="submitLabel">Check my risk</span></button>
+        <p class="subtle" id="disclaimer" style="font-size:.8rem;margin-top:14px;text-align:center"></p>
+      </div>
+    </div>
+
+    <!-- ============ RESULT ============ -->
+    <div id="resultView" class="hidden">
+      <div class="card result">
+        <div class="risk-badge" id="riskBadge"></div>
+        <p class="advice" id="advice"></p>
+
+        <div class="referral-box hidden" id="referralBox">
+          <h4 id="referralTitle">Help is on the way</h4>
+          <p id="referralText"></p>
+          <div class="msg" id="referralMsg"></div>
+        </div>
+
+        <div class="reasons">
+          <strong id="whyTitle">Why this result</strong>
+          <ul id="reasonsList"></ul>
+        </div>
+
+        <button class="btn" id="againBtn"></button>
+        <a class="btn secondary" href="/" id="homeBtn" style="margin-top:10px"></a>
+      </div>
+    </div>
+  </div>
