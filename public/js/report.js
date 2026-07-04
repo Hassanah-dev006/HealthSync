@@ -90,4 +90,67 @@
     map.setView([lat, lng], 15);
     $("locStatus").textContent = statusText || t("locationSet");
   }
+  // ---------- submit ----------
+  async function submit() {
+    if (selected.size === 0) { alert(t("selectSymptom")); return; }
+    if (!location) { alert(t("needLocation")); return; }
+
+    const btn = $("submitBtn");
+    btn.disabled = true;
+    $("submitLabel").textContent = t("submitting");
+    try {
+      const result = await window.api.post("/api/reports", {
+        symptoms: [...selected],
+        durationDays,
+        latitude: location.lat,
+        longitude: location.lng,
+        name: $("name").value.trim() || null,
+        phone: $("phone").value.trim() || null,
+        language: lang,
+      });
+      showResult(result);
+    } catch (err) {
+      alert(err.message || "Something went wrong. Please try again.");
+    } finally {
+      btn.disabled = false;
+      $("submitLabel").textContent = t("submit");
+    }
+  }
+
+  // ---------- result ----------
+  function showResult(result) {
+    const level = result.assessment.level;
+    $("formView").classList.add("hidden");
+    $("resultView").classList.remove("hidden");
+    window.scrollTo(0, 0);
+
+    const badge = $("riskBadge");
+    badge.className = "risk-badge risk-" + level;
+    badge.textContent = t("result" + level.charAt(0).toUpperCase() + level.slice(1));
+    $("advice").textContent = t("advice" + level.charAt(0).toUpperCase() + level.slice(1));
+
+    const reasons = $("reasonsList"); reasons.innerHTML = "";
+    result.assessment.reasons.forEach((r) => {
+      const li = document.createElement("li"); li.textContent = r; reasons.appendChild(li);
+    });
+
+    const box = $("referralBox");
+    if (result.referral) {
+      box.classList.remove("hidden");
+      $("referralText").textContent = t("referralText");
+      $("referralMsg").textContent = result.referral.message;
+    } else {
+      box.classList.add("hidden");
+    }
+  }
+
+  function reset() {
+    selected = new Set(); durationDays = 1;
+    $("name").value = ""; $("phone").value = "";
+    renderSymptoms(); renderDuration();
+    $("resultView").classList.add("hidden");
+    $("formView").classList.remove("hidden");
+    window.scrollTo(0, 0);
+    setTimeout(() => map.invalidateSize(), 50);
+  }
 }());
