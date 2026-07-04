@@ -153,4 +153,32 @@
     window.scrollTo(0, 0);
     setTimeout(() => map.invalidateSize(), 50);
   }
+  // ---------- wire up ----------
+  function init() {
+    renderSymptoms(); renderDuration(); applyText(); initMap();
+
+    $("langSwitch").querySelectorAll("button").forEach((b) => {
+      b.addEventListener("click", () => {
+        lang = b.dataset.lang;
+        $("langSwitch").querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
+        document.documentElement.lang = lang;
+        renderSymptoms(); renderDuration(); applyText();
+      });
+    });
+
+    $("locBtn").addEventListener("click", () => {
+      $("locStatus").textContent = t("locating");
+      if (!navigator.geolocation) { $("locStatus").textContent = t("locationError"); return; }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setLocation(pos.coords.latitude, pos.coords.longitude, t("locationSet")),
+        () => { $("locStatus").textContent = t("locationError"); }
+      );
+    });
+
+    $("submitBtn").addEventListener("click", submit);
+    $("againBtn").addEventListener("click", reset);
+    setTimeout(() => map.invalidateSize(), 200);
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
 }());
