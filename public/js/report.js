@@ -57,4 +57,37 @@
       wrap.appendChild(b);
     });
   }
+  // ---------- static text ----------
+  function applyText() {
+    const ids = [
+      "tagline", "reportTitle", "reportIntro", "dangerNote", "durationLabel",
+      "locationLabel", "useLocation", "optionalDetails", "disclaimer", "whyTitle",
+      "referralTitle",
+    ];
+    ids.forEach((id) => { if ($(id)) $(id).textContent = t(id); });
+    $("appName").childNodes[0].nodeValue = t("appName");
+    $("coreLabel").textContent = t("coreSymptoms");
+    $("dangerLabel").textContent = t("dangerSymptoms");
+    $("submitLabel").textContent = t("submit");
+    $("name").placeholder = t("namePlaceholder");
+    $("phone").placeholder = t("phonePlaceholder");
+    $("againBtn").textContent = t("newReport");
+    $("homeBtn").textContent = t("backHome");
+  }
+
+  // ---------- map for location ----------
+  function initMap() {
+    map = L.map("map").setView(KIGALI, 12);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap", maxZoom: 19,
+    }).addTo(map);
+    map.on("click", (e) => setLocation(e.latlng.lat, e.latlng.lng, t("locationManual")));
+  }
+  function setLocation(lat, lng, statusText) {
+    location = { lat, lng };
+    if (marker) marker.setLatLng([lat, lng]);
+    else marker = L.marker([lat, lng]).addTo(map);
+    map.setView([lat, lng], 15);
+    $("locStatus").textContent = statusText || t("locationSet");
+  }
 }());
