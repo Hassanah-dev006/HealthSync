@@ -22,7 +22,10 @@ const SYMPTOMS = {
  * @returns {{level:string, score:number, reasons:string[]}}
  */
 function assess(symptoms = [], durationDays = 1) {
-  const valid = symptoms.filter((s) => SYMPTOMS[s]);
+  // Deduplicate so a repeated symptom cannot inflate the score,
+  // and clamp duration to a sane positive number.
+  const valid = [...new Set(symptoms)].filter((s) => SYMPTOMS[s]);
+  durationDays = Math.max(1, Number(durationDays) || 1);
   const reasons = [];
   let score = 0;
 
