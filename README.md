@@ -17,6 +17,11 @@ and referrals as they happen.
 
 ---
 
+# Links
+Scrum board: https://github.com/users/Hassanah-dev006/projects/4
+
+
+
 ## 1. Quick start
 
 **Requirements:** [Node.js](https://nodejs.org) 18 or newer (tested on Node 22).
