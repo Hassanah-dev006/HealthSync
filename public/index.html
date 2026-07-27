@@ -4,47 +4,86 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#08393e" />
-  <title>HealthSync Malaria Early Detection &amp; Rapid Response</title>
-  <link rel="manifest" href="/manifest.webmanifest" />
+  <title>Official Login · Malaria Surveillance</title>
   <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    .login-wrap { min-height: calc(100vh - 56px); display: grid; place-items: center; padding: 24px; }
+    .login-card { width: 100%; max-width: 380px; background: #fff; border: 1px solid var(--line, #dce6e5);
+      border-radius: 16px; padding: 28px 26px; box-shadow: 0 10px 30px rgba(8,57,62,.08); }
+    .login-card h1 { font-size: 1.35rem; margin: 0 0 4px; color: var(--teal-deep); }
+    .login-card p.sub { margin: 0 0 20px; color: #5c6b6a; font-size: .9rem; }
+    .field { margin-bottom: 14px; }
+    .field label { display:block; font-size: .82rem; font-weight: 600; margin-bottom: 6px; color: #274; }
+    .field input { width: 100%; padding: 11px 12px; border: 1px solid #cfe0de; border-radius: 10px; font-size: 1rem; }
+    .field input:focus { outline: 2px solid var(--teal); border-color: var(--teal); }
+    .btn-primary { width: 100%; padding: 12px; border: 0; border-radius: 10px; background: var(--teal-deep);
+      color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; }
+    .btn-primary:hover { background: var(--teal); }
+    .err { background: #fdecea; color: #b3261e; border: 1px solid #f5c6c2; border-radius: 8px;
+      padding: 9px 12px; font-size: .85rem; margin-bottom: 14px; display: none; }
+    .backlink { display:block; text-align:center; margin-top: 16px; font-size: .85rem; }
+    .hint { margin-top: 18px; font-size: .76rem; color: #7c8b8a; text-align:center; }
+  </style>
 </head>
 <body>
   <div class="topbar">
     <div class="logo-dot">＋</div>
-    <div class="brand">Malaria Early Detection &amp; Rapid Response
-      <small>Community-driven · Real-time · ALU Foundations Project</small>
-    </div>
+    <div class="brand">Malaria Surveillance<small>District official access</small></div>
     <div class="spacer"></div>
-    <a class="navlink" href="/report.html">Report</a>
-    <a class="navlink" href="/dashboard.html">Dashboard</a>
+    <a class="navlink" href="/">Home</a>
   </div>
 
-  <div class="wrap">
-    <span class="eyebrow">Community-based surveillance</span>
-    <h1 class="title">Catch malaria early — in the community, in real time.</h1>
-    <p class="subtle" style="max-width:640px">
-      Residents and community health workers report symptoms in seconds. The system scores the
-      risk, watches for clusters across a village as they happen, and connects high-risk cases
-      to the nearest care.
-    </p>
-    <div class="tiles">
-      <a class="tile" href="/report.html">
-        <div class="ic" style="background:#e3f1f0;color:#0e5b61">📱</div>
-        <h2>Report symptoms</h2>
-        <p class="subtle">For community members &amp; health workers. Multilingual, icon-based, works on any phone.</p>
-      </a>
-      <a class="tile" href="/dashboard.html">
-        <div class="ic" style="background:#fdecea;color:#c0392b">🗺️</div>
-        <h2>Health dashboard</h2>
-        <p class="subtle">For district officials. Live map of reports, outbreak clusters, and referrals.</p>
-      </a>
-    </div>
+  <div class="login-wrap">
+    <form class="login-card" id="loginForm">
+      <h1>Official login</h1>
+      <p class="sub">Sign in to view the district surveillance dashboard. Residents do not need an account to report symptoms.</p>
+      <div class="err" id="err"></div>
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" autocomplete="username" required autofocus />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required />
+      </div>
+      <button class="btn-primary" type="submit" id="submitBtn">Sign in</button>
+      <a class="backlink" href="/report.html">← Back to symptom reporting</a>
+      <p class="hint">Demo account — username <b>official</b>, password <b>malaria2026</b></p>
+    </form>
   </div>
 
-  <footer class="foot">
-    Community-Based Malaria Early Detection &amp; Rapid Response System ·
-  </footer>
-  <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("/service-worker.js").catch(()=>{});</script>
+  <script src="/js/api.js"></script>
+  <script>
+    const form = document.getElementById("loginForm");
+    const err = document.getElementById("err");
+    const btn = document.getElementById("submitBtn");
+
+    // If already logged in, go straight to the dashboard.
+    fetch("/api/auth/me").then((r) => { if (r.ok) location.href = "/dashboard.html"; });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      err.style.display = "none";
+      btn.disabled = true; btn.textContent = "Signing in…";
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value,
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "Login failed.");
+        location.href = "/dashboard.html";
+      } catch (ex) {
+        err.textContent = ex.message;
+        err.style.display = "block";
+        btn.disabled = false; btn.textContent = "Sign in";
+      }
+    });
+  </script>
 </body>
 </html>
-    
+
