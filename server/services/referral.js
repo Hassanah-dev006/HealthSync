@@ -6,6 +6,7 @@ function nearestFacility(lat, lng) {
   const facilities = db.prepare("SELECT * FROM health_facilities").all();
   let best = null;
   for (const f of facilities) {
+    if (f.latitude == null || f.longitude == null) continue;
     const d = haversineKm(lat, lng, f.latitude, f.longitude);
     if (!best || d < best.distance) best = { facility: f, distance: d };
   }

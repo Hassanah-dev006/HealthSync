@@ -28,14 +28,24 @@ function computeClusters() {
     for (const c of candidates) {
       if (haversineKm(c.lat, c.lng, r.latitude, r.longitude) <= radiusKm) {
         c.points.push(r);
-        // recompute centroid as running average
-        c.lat = c.points.reduce((s, p) => s + p.latitude, 0) / c.points.length;
-        c.lng = c.points.reduce((s, p) => s + p.longitude, 0) / c.points.length;
+        // update centroid incrementally instead of re-summing every point
+        c.sumLat += r.latitude;
+        c.sumLng += r.longitude;
+        c.lat = c.sumLat / c.points.length;
+        c.lng = c.sumLng / c.points.length;
         placed = true;
         break;
       }
     }
-    if (!placed) candidates.push({ lat: r.latitude, lng: r.longitude, points: [r] });
+    if (!placed) {
+      candidates.push({
+        lat: r.latitude,
+        lng: r.longitude,
+        sumLat: r.latitude,
+        sumLng: r.longitude,
+        points: [r],
+      });
+    }
   }
 
   return candidates.filter((c) => c.points.length >= minCases);
