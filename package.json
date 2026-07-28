@@ -10,6 +10,7 @@
     "seed": "node server/seed/run.js",
     "reset": "node server/seed/run.js --reset"
   },
+  
   "keywords": [
     "malaria",
     "health",
@@ -20,8 +21,10 @@
   "author": "ALU BSc Software Engineering — Foundations Project Team",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "better-sqlite3": "^11.0.0",
-    "express": "^5.0.0"
+    "express": "^5.0.0",
+    "express-session": "^1.19.0"
   },
   "optionalDependencies": {
     "twilio": "^5.0.0"
