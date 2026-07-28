@@ -18,9 +18,9 @@ function init() {
       village     TEXT,
       latitude    REAL,
       longitude   REAL,
-      created_at  TEXT DEFAULT (datetime('now')),
       username      TEXT UNIQUE,                      -- login name (officials only)
       password_hash TEXT,                             -- bcrypt hash (officials only)
+      created_at  TEXT DEFAULT (datetime('now'))
     );
 
     CREATE TABLE IF NOT EXISTS health_facilities (
@@ -91,6 +91,9 @@ function init() {
 
 init();
 
+// --- Lightweight migration for databases created before login was added ---
+// Adds the username / password_hash columns to existing installs so the app
+// upgrades cleanly without wiping data.
 function ensureColumn(table, column, definition) {
   const cols = db.prepare(`PRAGMA table_info(${table})`).all();
   if (!cols.some((c) => c.name === column)) {
