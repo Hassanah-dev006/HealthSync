@@ -18,7 +18,9 @@ function init() {
       village     TEXT,
       latitude    REAL,
       longitude   REAL,
-      created_at  TEXT DEFAULT (datetime('now'))
+      created_at  TEXT DEFAULT (datetime('now')),
+      username      TEXT UNIQUE,                      -- login name (officials only)
+      password_hash TEXT,                             -- bcrypt hash (officials only)
     );
 
     CREATE TABLE IF NOT EXISTS health_facilities (
@@ -88,5 +90,14 @@ function init() {
 }
 
 init();
+
+function ensureColumn(table, column, definition) {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all();
+  if (!cols.some((c) => c.name === column)) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
+}
+ensureColumn("users", "username", "TEXT");
+ensureColumn("users", "password_hash", "TEXT");
 
 module.exports = { db, init, dbPath };

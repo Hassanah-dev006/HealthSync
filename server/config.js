@@ -30,4 +30,17 @@ module.exports = {
   },
 
   dbFile: process.env.DB_FILE || "malaria.db",
+
+  auth: {
+    sessionSecret: process.env.SESSION_SECRET || "healthsync-dev-secret-change-me",
+    officials: [
+      {
+        user_id: "official_admin",
+        name: process.env.OFFICIAL_NAME || "District Health Official",
+        username: process.env.OFFICIAL_USER || "official",
+        password: process.env.OFFICIAL_PASS || "malaria2026",
+        village: "Gasabo",
+      },
+    ],
+  },
 };
