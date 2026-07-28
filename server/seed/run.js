@@ -3,6 +3,30 @@ const { facilities, chws } = require("./facilities");
 const { id } = require("../services/geo");
 const riskEngine = require("../services/riskEngine");
 const { refreshClusters } = require("../services/clustering");
+const bcrypt = require("bcryptjs");
+const config = require("../config");
+
+/** Seed district-official login accounts (idempotent). Passwords are hashed. */
+function seedOfficials() {
+  const ins = db.prepare(
+    `INSERT OR REPLACE INTO users
+       (user_id, name, role, village, username, password_hash)
+     VALUES (@user_id, @name, 'official', @village, @username, @password_hash)`
+  );
+  const tx = db.transaction(() => {
+    config.auth.officials.forEach((o) => {
+      ins.run({
+        user_id: o.user_id,
+        name: o.name,
+        village: o.village || null,
+        username: o.username,
+        password_hash: bcrypt.hashSync(o.password, 10),
+      });
+    });
+  });
+  tx();
+  console.log(`Seeded ${config.auth.officials.length} official login account(s).`);
+}
 
 function seedFacilitiesAndChws() {
   const insFac = db.prepare(
@@ -72,6 +96,7 @@ function run() {
   const args = process.argv.slice(2);
   if (args.includes("--reset")) reset();
   seedFacilitiesAndChws();
+  seedOfficials();
   const reportCount = db.prepare("SELECT COUNT(*) n FROM symptom_reports").get().n;
   if (reportCount === 0) seedDemoReports();
   console.log("Seed complete.");
@@ -80,4 +105,4 @@ function run() {
 // Only run automatically when invoked directly
 if (require.main === module) run();
 
-module.exports = { seedFacilitiesAndChws, seedDemoReports, reset, run };
+module.exports = { seedFacilitiesAndChws, seedDemoReports, seedOfficials, reset, run };

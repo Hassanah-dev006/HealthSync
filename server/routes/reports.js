@@ -6,6 +6,7 @@ const riskEngine = require("../services/riskEngine");
 const { createReferral } = require("../services/referral");
 const { refreshClusters } = require("../services/clustering");
 const config = require("../config");
+const { requireOfficial } = require("../auth");
 
 router.post("/", async (req, res) => {
   try {
@@ -81,7 +82,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", (req, res) => {
+router.get("/", requireOfficial, (req, res) => {
   const limit = Math.min(parseInt(req.query.limit || "200", 10), 1000);
   const rows = db
     .prepare(

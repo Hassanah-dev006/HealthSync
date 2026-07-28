@@ -13,8 +13,8 @@
     <div class="logo-dot">＋</div>
     <div class="brand">Health Dashboard<small>District surveillance · Live view</small></div>
     <div class="spacer"></div>
-    <a class="navlink" href="/report.html">Report</a>
-    <a class="navlink" href="/">Home</a>
+    <span class="navlink" id="whoami" style="opacity:.85"></span>
+    <a class="navlink" href="#" id="logoutBtn">Log out</a>
     <button class="theme-toggle" id="themeToggle">Dark</button>
   </div>
 
@@ -72,6 +72,19 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/js/api.js"></script>
   <script src="/js/dashboard.js"></script>
+  <script>
+    // Show the logged-in official's name; redirect to login if the session is gone.
+    fetch("/api/auth/me")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((u) => { document.getElementById("whoami").textContent = "Signed in: " + (u.name || "Official"); })
+      .catch(() => { location.href = "/login.html"; });
+
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      await fetch("/api/auth/logout", { method: "POST" });
+      location.href = "/login.html";
+    });
+  </script>
   <script src="/js/theme.js"></script>
 </body>
 </html>
